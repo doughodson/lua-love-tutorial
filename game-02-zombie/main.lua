@@ -27,6 +27,12 @@ function love.update(dt)
   if love.keyboard.isDown("d") then
     player.x = player.x + player.speed * dt
   end
+
+  for i,z in ipairs(zombies) do
+    z.x = z.x + math.cos(zombie_player_angle(z)) * z.speed * dt
+    z.y = z.y + math.sin(zombie_player_angle(z)) * z.speed * dt
+  end
+
 end
 
 function love.draw()
@@ -36,14 +42,19 @@ function love.draw()
                      sprites.player:getWidth()/2, sprites.player:getHeight()/2)
 
   for i,z in ipairs(zombies) do
-    love.graphics.draw(sprites.zombie, z.x, z.y)
-
+    love.graphics.draw(sprites.zombie, z.x, z.y, zombie_player_angle(z),
+                       nil, nil,
+                       sprites.zombie:getWidth()/2, sprites.zombie:getHeight()/2)
   end
 
 end
 
 function player_mouse_angle()
   return math.atan2(player.y - love.mouse.getY(), player.x - love.mouse.getX()) + math.pi
+end
+
+function zombie_player_angle(enemy)
+  return math.atan2(player.y - enemy.y, player.x - enemy.x)
 end
 
 function spawn_zombie()
